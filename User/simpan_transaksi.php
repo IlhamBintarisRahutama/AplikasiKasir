@@ -51,7 +51,7 @@ if ($count > 0) {
     (id_order, nama_pelanggan, kasir, status, order_type, total_bayar, dibayar, kembali, jumlah_pesanan) 
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
   $stmt->bind_param(
-    "ssssssssi",
+    "sssssiiii",
     $id_order,
     $nama_pelanggan,
     $kasir,

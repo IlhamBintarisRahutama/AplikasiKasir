@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Proses upload foto
     $fotoPath = null;
     if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
-        $targetDir = "../cover/user/";
+        $targetDir = "../Cover/cover_user/";
         $filename = basename($_FILES['foto']['name']);
         $targetFile = $targetDir . time() . "_" . $filename;
 
@@ -27,13 +27,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
     // Buat query update
-    $query = "UPDATE users SET nama = ?, username = ?, no_telepon = ?, password = ?, alamat = ?, role = ?";
+    $query = "UPDATE users SET nama = ?, username = ?, no_telpon = ?, password = ?, alamat = ?, role = ?";
+    $params = [$nama, $username, $telepon, $hashedPassword, $alamat, $level];
+    $types = "ssssss";
+
     if ($fotoPath) {
         $query .= ", gambar_user = ?";
+        $params[] = $fotoPath;
+        $types .= "s";
     }
     $query .= " WHERE id = ?";
+    $params[] = $id;
+    $types .= "i";
 
     $stmt = mysqli_prepare($conn, $query);
+    if (!$stmt) {
+        die("Prepare failed: " . mysqli_error($conn));
+    }
+    mysqli_stmt_bind_param($stmt, $types, ...$params);
+
 
     if ($fotoPath) {
         mysqli_stmt_bind_param($stmt, "sssssssi", $nama, $username, $telepon, $hashedPassword, $alamat, $level, $fotoPath, $id);
@@ -50,4 +62,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header("Location: ../Admin/pengguna.php");
     exit();
 }
-?>

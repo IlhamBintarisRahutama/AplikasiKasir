@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $path = "";
     if ($gambar !== '') {
         $tmp = $_FILES['gambar_menu']['tmp_name'];
-        $path = "cover/menu/" . $gambar;
+        $path = "Cover/cover_menu/" . $gambar;
         move_uploaded_file($tmp, "../" . $path);
         $update = ", gambar_menu = '$path'";
     } else {
