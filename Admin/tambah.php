@@ -1,12 +1,14 @@
 <?php 
 session_start();
-if (!isset($_SESSION['username'])) {
+if (!isset($_SESSION['role'])) {
     header("Location: ../index.php");
     exit();
 }
-if ($_SESSION['role'] == 'user') { 
-    header("Location: user.php"); 
-    exit();}
+
+if ($_SESSION['role'] != 'admin') { 
+    header("Location: ../KasirOnly/kasir.php"); 
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">

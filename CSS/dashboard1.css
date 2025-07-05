@@ -869,7 +869,14 @@ body {
 /* Kasir Start */
 .kasir-main-layout {
   display: grid;
-  grid-template-columns: 2.5fr 1.5fr; /* Kolom kiri (Daftar Menu) lebih lebar */
+  grid-template-columns: 2fr 1.5fr; /* Kolom kiri (Daftar Menu) lebih lebar */
+  gap: 25px; /* Jarak antara kedua kolom utama */
+  margin-top: 25px; /* Jarak dari page-header */
+  align-items: start; /* Konten di dalam kolom rata atas */
+}
+.kasir-main-layout2 {
+  display: grid;
+  grid-template-columns: 2fr 1.5fr 1.8fr; /* Kolom kiri (Daftar Menu) lebih lebar */
   gap: 25px; /* Jarak antara kedua kolom utama */
   margin-top: 25px; /* Jarak dari page-header */
   align-items: start; /* Konten di dalam kolom rata atas */
@@ -1165,6 +1172,86 @@ body {
   padding: 15px 20px;
   font-size: 1.1rem;
   font-weight: 700;
+}
+
+/* ================================================================ */
+/* Kolom Kanan: List Order (Desain Baru)                            */
+/* ================================================================ */
+
+.list-order-column {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+    border: 1px solid #E5E7EB;
+    background-color: #fff; /* Tambahkan background putih */
+}
+
+.list-order-header {
+    background-color: #D98E54;
+    padding: 12px 20px;
+}
+
+.list-order-header h2 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.list-order-body {
+    padding: 8px;
+}
+
+.list-order-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.list-order-table th {
+    padding: 12px 10px;
+    text-align: left;
+    font-weight: 600;
+    color: #374151;
+    border-bottom: 1px solid #F3F4F6;
+}
+
+.list-order-table td {
+    padding: 12px 10px;
+    text-align: left;
+    border-bottom: 1px solid #F3F4F6;
+    vertical-align: middle;
+    color: #4B5563;
+}
+
+.list-order-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.list-order-table th:last-child,
+.list-order-table td:last-child {
+    text-align: center;
+}
+
+.btn-delete-item {
+    background-color: #EF4444;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    padding: 7px 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+}
+
+.btn-delete-item:hover {
+    background-color: #DC2626;
+}
+
+.btn-delete-item .bx-trash {
+    font-size: 18px;
 }
 /* Kasir End */
 

@@ -1,4 +1,14 @@
 <?php
+session_start();
+if (!isset($_SESSION['role'])) {
+    header("Location: ../index.php");
+    exit();
+}
+
+if ($_SESSION['role'] != 'admin') { 
+    header("Location: ../KasirOnly/kasir.php"); 
+    exit();
+}
 include '../Handling/db.php';
 $query = mysqli_query($conn, "SELECT * FROM transaksi ORDER BY created_at DESC");
 $orders = [];
@@ -101,9 +111,15 @@ if (isset($_GET['delete'])) {
 
     <main class="main-content">
         <div class="order-controls">
+            <?php
+            $today = date('Y-m-d');
+            $selectedDate = isset($_GET['date']) ? htmlspecialchars($_GET['date']) : $today;
+            ?>
             <div class="date-filter">
-                <input type="date" value="2025-05-31">
-                <button class="btn btn-search">Search</button>
+                <form method="GET">
+                    <input type="date" name="date" value="<?= $selectedDate ?>">
+                    <button type="submit" class="btn btn-search">Search</button>
+                </form>
             </div>
             <button class="btn btn-add-transaction" onclick="window.location.href='kasir.php'">
                 <i class='bx bx-plus'></i>
@@ -149,25 +165,32 @@ if (isset($_GET['delete'])) {
                     <tbody>
                         <?php
                         include '../Handling/db.php';
-                        $where = [];
-                        $params = [];
 
+                        // Set tanggal default ke hari ini
+                        $today = date('Y-m-d');
+                        $selectedDate = isset($_GET['date']) && $_GET['date'] !== '' ? $_GET['date'] : $today;
+
+                        $where = [];
+                        $date = mysqli_real_escape_string($conn, $selectedDate);
+                        $where[] = "DATE(created_at) = '$date'";
+
+                        // Filter status
                         if (!empty($_GET['status']) && in_array($_GET['status'], ['Lunas', 'Bayar Nanti'])) {
                             $status = mysqli_real_escape_string($conn, $_GET['status']);
                             $where[] = "status = '$status'";
                         }
 
+                        // Filter keyword
                         if (!empty($_GET['keyword'])) {
                             $keyword = mysqli_real_escape_string($conn, $_GET['keyword']);
                             $where[] = "id_order LIKE '%$keyword%'";
                         }
 
-                        $whereClause = '';
-                        if (!empty($where)) {
-                            $whereClause = 'WHERE ' . implode(' AND ', $where);
-                        }
+                        $whereClause = 'WHERE ' . implode(' AND ', $where);
 
                         $query = mysqli_query($conn, "SELECT * FROM transaksi $whereClause ORDER BY created_at DESC");
+
+                        // Tampilkan tabel
                         $no = 1;
                         while ($data = mysqli_fetch_assoc($query)) {
                             echo "<tr>";
@@ -181,7 +204,9 @@ if (isset($_GET['delete'])) {
                             echo "<td><span class='badge " . strtolower(str_replace(' ', '-', $data['order_type'])) . "'>" . $data['order_type'] . "</span></td>";
                             echo "<td><span class='badge " . strtolower(str_replace(' ', '-', $data['status'])) . "'>" . $data['status'] . "</span></td>";
                             echo "<td>
-                                    <button class='action-btn'><i class='bx bx-edit'></i></button>
+                                    <a class=\"action-btn\" href=\"detail_order.php?id_order=" . urlencode($data['id_order']) . "\">
+                                        <i class='bx bx-edit'></i>
+                                    </a>
                                     <a href=\"?delete=" . urlencode($data['id_order']) . "\" onclick=\"return confirm('Yakin ingin menghapus order ini?');\" class=\"action-btn\">
                                         <i class='bx bx-trash'></i>
                                     </a>

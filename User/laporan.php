@@ -1,4 +1,14 @@
 <?php
+session_start();
+if (!isset($_SESSION['role'])) {
+    header("Location: ../index.php");
+    exit();
+}
+
+if ($_SESSION['role'] != 'admin') { 
+    header("Location: ../KasirOnly/kasir.php"); 
+    exit();
+}
 include '../Handling/db.php';
 if (isset($_GET['delete'])) {
     $deleteId = mysqli_real_escape_string($conn, $_GET['delete']);
@@ -89,23 +99,55 @@ if (isset($_GET['delete'])) {
         </header>
 
         <main class="main-content">
+            <?php
+            include '../Handling/db.php';
+
+            // Default tanggal: awal dan akhir bulan ini
+            $today = date('Y-m-d');
+            $firstDay = date('Y-m-01');
+            $lastDay = date('Y-m-t');
+
+            // Ambil dari GET jika ada, kalau tidak gunakan default
+            $from = isset($_GET['from']) && $_GET['from'] !== '' ? $_GET['from'] : $firstDay;
+            $to   = isset($_GET['to']) && $_GET['to'] !== '' ? $_GET['to']   : $lastDay;
+
+            $where = [];
+            $where[] = "DATE(created_at) BETWEEN '" . mysqli_real_escape_string($conn, $from) . "' AND '" . mysqli_real_escape_string($conn, $to) . "'";
+
+            // Filter keyword jika ada
+            if (!empty($_GET['keyword'])) {
+                $keyword = mysqli_real_escape_string($conn, $_GET['keyword']);
+                $where[] = "id_order LIKE '%$keyword%'";
+            }
+
+            $whereClause = 'WHERE ' . implode(' AND ', $where);
+
+            // Ambil data transaksi
+            $query = mysqli_query($conn, "SELECT * FROM transaksi $whereClause ORDER BY created_at DESC");
+
+            // Variabel total
+            $totalQty = 0;
+            $totalBayar = 0;
+            $no = 1;
+            ?>
             <div class="order-controls">
                 <form method="GET" class="order-controls">
                     <div class="date-filter">
-                        <input type="date" name="from" value="<?= $_GET['from'] ?? '' ?>">
-                        <span>-</span>
-                        <input type="date" name="to" value="<?= $_GET['to'] ?? '' ?>">
-                        <button type="submit" class="btn btn-search">Search</button>
+                        <form method="GET">
+                            <input type="date" name="from" value="<?= htmlspecialchars($from) ?>">
+                            <span>-</span>
+                            <input type="date" name="to" value="<?= htmlspecialchars($to) ?>">
+                            <button type="submit" class="btn btn-search">Search</button>
+                        </form>
                     </div>
                     <!-- <button type="button" class="btn btn-add-transaction" onclick="window.print()"> 
                         <i class='bx bx-printer'></i> Cetak
                     </button> -->
                 </form>
-                <button class="btn btn-add-transaction"> <i class='bx bx-printer'></i>
-                    Cetak
-                </button>
+                <a href="cetak_laporan.php" target="_blank" class="btn btn-add-transaction">
+                    <i class='bx bx-printer'></i> Cetak
+                </a>
             </div>
-
             <div class="order-list-container content-container">
                 <div class="card-header-orange">
                     <h3 class="section-title">Laporan Penjualan</h3> </div>
@@ -119,29 +161,6 @@ if (isset($_GET['delete'])) {
                 </div>
 
                 <div class="table-responsive">
-                    <?php
-                    include '../Handling/db.php';
-
-                    $where = [];
-                    if (!empty($_GET['from']) && !empty($_GET['to'])) {
-                        $from = mysqli_real_escape_string($conn, $_GET['from']);
-                        $to = mysqli_real_escape_string($conn, $_GET['to']);
-                        $where[] = "DATE(created_at) BETWEEN '$from' AND '$to'";
-                    }
-
-                    if (!empty($_GET['keyword'])) {
-                        $keyword = mysqli_real_escape_string($conn, $_GET['keyword']);
-                        $where[] = "id_order LIKE '%$keyword%'";
-                    }
-
-                    $whereClause = count($where) ? 'WHERE ' . implode(' AND ', $where) : '';
-
-                    $query = mysqli_query($conn, "SELECT * FROM transaksi $whereClause ORDER BY created_at DESC");
-
-                    $totalQty = 0;
-                    $totalBayar = 0;
-                    $no = 1;
-                    ?>
 
                     <table>
                         <thead>
@@ -187,6 +206,7 @@ if (isset($_GET['delete'])) {
                                 <td></td>
                             </tr>
                         </tfoot>
+
                     </table>
                 </div>
             </div>

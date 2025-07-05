@@ -5,8 +5,8 @@ if (!isset($_SESSION['role'])) {
     exit();
 }
 
-if ($_SESSION['role'] != 'admin') { 
-    header("Location: ../KasirOnly/kasir.php"); 
+if ($_SESSION['role'] != 'kasir') {
+    header("Location: ../Admin/index.php");
     exit();
 }
 include '../Handling/db.php';
@@ -21,6 +21,16 @@ $kategori_list = [];
 while ($row = mysqli_fetch_assoc($kategori_query)) {
     $kategori_list[] = $row;
 }
+$username = $_SESSION['username'];
+$sql = "SELECT nama, gambar_user FROM users WHERE username = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("s", $username);
+$stmt->execute();
+$result = $stmt->get_result();
+$userData = $result->fetch_assoc();
+
+$nama = $userData['nama'] ?? 'Admin';
+$gambar = $userData['gambar_user'] ?? 'https://i.pravatar.cc/40?u=default';
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -40,29 +50,11 @@ while ($row = mysqli_fetch_assoc($kategori_query)) {
         </div>
 
         <div class="admin-profile">
-            <img src="https://i.pravatar.cc/40?u=admin" alt="Admin" class="admin-avatar">
-            <span class="admin-name">Admin</span>
+            <img src="../<?= htmlspecialchars($gambar) ?>" alt="<?= htmlspecialchars($nama) ?>" class="admin-avatar">
+            <span class="admin-name"><?= htmlspecialchars($nama) ?></span>
         </div>
 
         <ul class="nav-links">
-            <li>
-                <a href="../Admin/dashboard.php">
-                    <i class='bx bxs-dashboard'></i>
-                    <span class="link-name">Dashboard</span>
-                </a>
-            </li>
-            <li class="nav-item-dropdown open">
-                <div class="dropdown-toggle">
-                    <i class='bx bx-list-ul'></i>
-                    <span class="link-name">Manajemen</span>
-                    <i class='bx bx-chevron-down arrow'></i>
-                </div>
-                <ul class="sub-menu" style="max-height: 200px;">
-                    <li><a href="../Admin/index.php" class="active">Menu</a></li>
-                    <li><a href="../Admin/kategori.php">Kategori</a></li>
-                    <li><a href="../Admin/pengguna.php">Pengguna</a></li>
-                </ul>
-            </li>
             <li>
                 <a href="kasir.php">
                     <i class='bx bx-money-withdraw'></i>
@@ -73,12 +65,6 @@ while ($row = mysqli_fetch_assoc($kategori_query)) {
                 <a href="order.php">
                     <i class='bx bx-cart-alt'></i>
                     <span class="link-name">Order</span>
-                </a>
-            </li>
-            <li>
-                <a href="laporan.php">
-                    <i class='bx bxs-report'></i>
-                    <span class="link-name">Laporan</span>
                 </a>
             </li>
             <li>

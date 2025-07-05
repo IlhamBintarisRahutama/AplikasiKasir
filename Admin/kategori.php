@@ -1,12 +1,13 @@
 <?php 
 // SESSION & DB CONNECTION
 session_start();
-if (!isset($_SESSION['username'])) {
+if (!isset($_SESSION['role'])) {
     header("Location: ../index.php");
     exit();
 }
-if ($_SESSION['role'] == 'user') { 
-    header("Location: user.php"); 
+
+if ($_SESSION['role'] != 'admin') { 
+    header("Location: ../KasirOnly/kasir.php"); 
     exit();
 }
 
@@ -119,7 +120,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nama_kategori'])) {
                                 echo "<td>" . $no++ . "</td>";
                                 echo "<td>" . htmlspecialchars($row['nama_kategori']) . "</td>";
                                 echo "<td class='action-cell'>
-                                        <button class='btn-action edit' title='Edit'><i class='bx bx-pencil'></i></button>
                                         <button class='btn-action delete' title='Hapus'><i class='bx bx-trash'></i></button>
                                       </td>";
                                 echo "</tr>";

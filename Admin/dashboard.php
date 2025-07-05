@@ -1,13 +1,16 @@
-<?php 
+<?php
 session_start();
-if (!isset($_SESSION['username'])) {
+if (!isset($_SESSION['role'])) {
     header("Location: ../index.php");
     exit();
 }
-if ($_SESSION['role'] == 'user') { 
-    header("Location: user.php"); 
-    exit();}
+
+if ($_SESSION['role'] != 'admin') { 
+    header("Location: ../KasirOnly/kasir.php"); 
+    exit();
+}
 ?>
+
 
 <!DOCTYPE html>
 <html lang="id">
@@ -76,6 +79,12 @@ if ($_SESSION['role'] == 'user') {
                     <span class="link-name">Laporan</span>
                 </a>
             </li>
+            <li>
+                <a href="../Handling/logout.php">
+                    <i class='bx bxs-report'></i>
+                    <span class="link-name">Logout</span>
+                </a>
+            </li>
         </ul>
     </nav>
 
@@ -133,11 +142,15 @@ if ($_SESSION['role'] == 'user') {
                 <div class="content-body">
                     <div class="flex justify-end items-center mb-4">
                         <div class="mb-3">
-                        <select class="form-select mb-3" id="tahunSelect">
-                            <option value="2025" selected>2025</option>
-                            <option value="2024">2024</option>
-                            <option value="2023">2023</option>
-                        </select>
+                            <div class="flex justify-end items-center mb-4">
+                                <label for="tahunSelect">Tahun:</label>
+                                <select id="tahunSelect">
+                                    <option value="2025">2025</option>
+                                    <option value="2024">2024</option>
+                                    <option value="2023">2023</option>
+                                </select>
+                                </div>
+
                         </div>
                     </div>
                     <div class="chart-container">
@@ -203,6 +216,53 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Gagal load data chart:', error);
       });
   }
+
+///////////////////////////////
+
+function loadChartData(tahun) {
+  fetch(`sales.php?tahun=${encodeURIComponent(tahun)}`)
+    .then(res => res.json())
+    .then(data => {
+      if (salesChart) {
+        salesChart.destroy();
+      }
+      salesChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: data.labels,
+          datasets: [{
+            label: `Penjualan Rp`,
+            data: data.data,
+            backgroundColor: '#f97316',
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: v => `Rp.${v.toLocaleString('id-ID')}`
+              }
+            }
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: ctx => `Penjualan: Rp.${ctx.parsed.y.toLocaleString('id-ID')}`
+              }
+            }
+          }
+        }
+      });
+    })
+    .catch(error => {
+      console.error('Gagal load data chart:', error);
+    });
+}
 
   // Load awal pakai tahun terpilih
   loadChartData(tahunSelect.value);

@@ -115,58 +115,83 @@ document.addEventListener("DOMContentLoaded", function () {
   updateOrderSummary();
 });
 
-document.querySelector('.btn-save-transaction').addEventListener('click', function () {
-    const id_order = document.getElementById("id_order").value;
-    const nama_pelanggan = document.getElementById("pelanggan").value;
-    const status = document.getElementById("status").value;
-    const order_type = document.getElementById("order_type").value;
-    const total_bayar = document.getElementById("total_bayar").value.replace(/\./g, '');
-    const dibayar = document.getElementById("dibayar").value.replace(/\./g, '');
-    const kembali = document.getElementById("kembali").value.replace(/\./g, '');
-    const kasirName = document.getElementById("kasir").value;
+document.querySelector(".btn-save-transaction").addEventListener("click", () => {
+  const id_order = document.getElementById("id_order").value;
+  const nama_pelanggan = document.getElementById("pelanggan").value;
+  const kasir = document.getElementById("kasir").value;
+  const status = document.getElementById("status").value;
+  const order_type = document.getElementById("order_type").value;
+  const total_bayar = parseInt(document.getElementById("total_bayar").value.replace(/\D/g, '')) || 0;
+  const dibayar = parseInt(document.getElementById("dibayar").value.replace(/\D/g, '')) || 0;
+  const kembali = parseInt(document.getElementById("kembali").value.replace(/\D/g, '')) || 0;
 
-    // validasi sederhana
-    if (!nama_pelanggan || parseInt(dibayar) < parseInt(total_bayar)) {
-        alert("Pastikan data valid. Pelanggan tidak boleh kosong dan pembayaran mencukupi.");
-        return;
-    }
+  // Kumpulkan semua item
+  const items = [];
+  document.querySelectorAll("#order-items-list .order-item").forEach(item => {
+    const nama_menu = item.querySelector(".item-name").textContent.trim();
+    const harga = parseInt(item.dataset.price);
+    const jumlah = parseInt(item.querySelector(".quantity-value").textContent);
 
-    // Hitung jumlah_pesanan dari semua item
-    const orderItems = document.querySelectorAll("#order-items-list .order-item");
-    let jumlah_pesanan = 0;
-    orderItems.forEach(item => {
-      const qty = parseInt(item.querySelector(".quantity-value").textContent) || 0;
-      jumlah_pesanan += qty;
+    items.push({
+      nama_menu,
+      harga,
+      jumlah
     });
+  });
 
-    // Siapkan data
-    const formData = new FormData();
-    formData.append("id_order", id_order);
-    formData.append("nama_pelanggan", nama_pelanggan);
-    formData.append("status", status);
-    formData.append("kasir", kasirName);
-    formData.append("order_type", order_type);
-    formData.append("total_bayar", total_bayar);
-    formData.append("dibayar", dibayar);
-    formData.append("kembali", kembali);
-    formData.append("jumlah_pesanan", jumlah_pesanan);
+  const mode = document.getElementById("mode_form")?.value || "create";
 
-    // Kirim data ke PHP menggunakan fetch
-    fetch('simpan_transaksi.php', {
-        method: 'POST',
-        body: formData
+  if (items.length === 0 && mode === "create") {
+    alert("Belum ada item yang dipesan!");
+    return;
+  }
+
+  if (!nama_pelanggan) {
+    alert("Nama pelanggan harus diisi!");
+    return;
+  }
+
+  if (status === "Bayar Nanti" && dibayar < 0) {
+    alert("Dibayar tidak boleh negatif!");
+    return;
+  }
+
+  if (dibayar < total_bayar && !/bayar nanti/i.test(status)) {
+    alert("Pembayaran kurang!");
+    return;
+  }
+
+
+  // Kirim ke server
+  fetch('../User/simpan_transaksi.php', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      id_order,
+      nama_pelanggan,
+      kasir,
+      status,
+      order_type,
+      total_bayar,
+      dibayar,
+      kembali,
+      jumlah_pesanan: items.reduce((sum, item) => sum + item.jumlah, 0),
+      items
     })
+  })
     .then(res => res.json())
     .then(data => {
-        if (data.success) {
-            alert('Transaksi berhasil disimpan');
-            window.location.href = 'order.php';
-        } else {
-            alert('Gagal menyimpan transaksi: ' + (data.message || 'Unknown error'));
-        }
+      if (data.success) {
+        alert('Transaksi berhasil disimpan!');
+        window.location.href = "order.php";
+      } else {
+        alert('Gagal menyimpan transaksi: ' + data.message);
+      }
     })
-    .catch(error => {
-        alert('Terjadi kesalahan saat mengirim data ke server');
-        console.error(error);
+    .catch(err => {
+      console.error(err);
+      alert('Terjadi kesalahan pada server.');
     });
 });
