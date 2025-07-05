@@ -10,15 +10,32 @@ $result = $conn->query($query);
 
 if ($result && $result->num_rows === 1) {
     $user = $result->fetch_assoc();
+    $stored_hash = $user['password'];
 
-    if (password_verify($password_input, $user['password'])) {
+    $is_valid = false;
+
+    // Cek dengan bcrypt
+    if (password_verify($password_input, $stored_hash)) {
+        $is_valid = true;
+    }
+    // Cek jika masih pakai MD5
+    elseif ($stored_hash === md5($password_input)) {
+        $is_valid = true;
+
+        // Upgrade password ke bcrypt
+        $new_bcrypt = password_hash($password_input, PASSWORD_BCRYPT);
+        $stmt = $conn->prepare("UPDATE users SET password = ? WHERE username = ?");
+        $stmt->bind_param("ss", $new_bcrypt, $username);
+        $stmt->execute();
+    }
+
+    if ($is_valid) {
         $_SESSION['username'] = $user['username'];
         $_SESSION['role'] = $user['role'];
 
         if ($user['role'] == 'admin') {
             header("Location: ../Admin/index.php");
-        }
-        if ($user['role'] == 'kasir') {
+        } elseif ($user['role'] == 'kasir') {
             header("Location: ../KasirOnly/kasir.php");
         }
         exit();
