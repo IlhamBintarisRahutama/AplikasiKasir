@@ -1,4 +1,4 @@
-<?php 
+<?php
 // SESSION & DB CONNECTION
 session_start();
 if (!isset($_SESSION['role'])) {
@@ -6,8 +6,8 @@ if (!isset($_SESSION['role'])) {
     exit();
 }
 
-if ($_SESSION['role'] != 'admin') { 
-    header("Location: ../KasirOnly/kasir.php"); 
+if ($_SESSION['role'] != 'admin') {
+    header("Location: ../KasirOnly/kasir.php");
     exit();
 }
 
@@ -16,7 +16,7 @@ include '../Handling/db.php';
 // HANDLE TAMBAH KATEGORI
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nama_kategori'])) {
     $nama_kategori = mysqli_real_escape_string($conn, $_POST['nama_kategori']);
-    
+
     if (!empty($nama_kategori)) {
         $check = mysqli_query($conn, "SELECT * FROM kategori WHERE nama_kategori = '$nama_kategori'");
         if (mysqli_num_rows($check) === 0) {
@@ -30,6 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nama_kategori'])) {
 
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -40,6 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nama_kategori'])) {
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="../CSS/dashboard.css">
 </head>
+
 <body>
     <nav class="sidebar">
         <div class="sidebar-header">
@@ -115,16 +117,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nama_kategori'])) {
                             <?php
                             $kategori = mysqli_query($conn, "SELECT * FROM kategori ORDER BY id DESC");
                             $no = 1;
-                            while ($row = mysqli_fetch_assoc($kategori)) {
-                                echo "<tr>";
-                                echo "<td>" . $no++ . "</td>";
-                                echo "<td>" . htmlspecialchars($row['nama_kategori']) . "</td>";
-                                echo "<td class='action-cell'>
-                                        <button class='btn-action delete' title='Hapus'><i class='bx bx-trash'></i></button>
-                                      </td>";
-                                echo "</tr>";
-                            }
+                            while ($row = mysqli_fetch_assoc($kategori)) :
                             ?>
+                                <tr>
+                                    <td><?= $no++ ?></td>
+                                    <td><?= htmlspecialchars($row['nama_kategori']) ?></td>
+                                    <td class="action-cell">
+                                        <a href="../Handling/delete_kategori.php?id=<?= urlencode($row['id']) ?>"
+                                            class="btn-action delete"
+                                            title="Hapus"
+                                            onclick="return confirm('Yakin ingin menghapus kategori ini?')">
+                                            <i class='bx bx-trash'></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            <?php endwhile; ?>
+
                         </tbody>
                     </table>
                 </div>
@@ -134,4 +142,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nama_kategori'])) {
 
     <script src="../JS/script.js"></script>
 </body>
+
 </html>

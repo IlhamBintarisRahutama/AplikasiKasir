@@ -29,12 +29,12 @@ $cek_stmt->fetch();
 $cek_stmt->close();
 
 if ($count > 0) {
-  // 1A. Sudah ada ➜ lakukan UPDATE transaksi
+  // Sudah ada ➜ lakukan UPDATE tanpa jumlah_pesanan
   $stmt = $conn->prepare("UPDATE transaksi SET 
-    nama_pelanggan = ?, kasir = ?, status = ?, order_type = ?, total_bayar = ?, dibayar = ?, kembali = ?, jumlah_pesanan = ?
+    nama_pelanggan = ?, kasir = ?, status = ?, order_type = ?, total_bayar = ?, dibayar = ?, kembali = ?
     WHERE id_order = ?");
   $stmt->bind_param(
-    "ssssiiiis",
+    "ssssiiis",
     $nama_pelanggan,
     $kasir,
     $status,
@@ -42,11 +42,10 @@ if ($count > 0) {
     $total_bayar,
     $dibayar,
     $kembali,
-    $jumlah_pesanan,
     $id_order
   );
 } else {
-  // 1B. Belum ada ➜ lakukan INSERT transaksi
+  // Belum ada ➜ lakukan INSERT transaksi lengkap
   $stmt = $conn->prepare("INSERT INTO transaksi 
     (id_order, nama_pelanggan, kasir, status, order_type, total_bayar, dibayar, kembali, jumlah_pesanan) 
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");

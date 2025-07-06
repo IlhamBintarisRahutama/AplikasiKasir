@@ -1,13 +1,13 @@
 <?php
 session_start();
 if (!isset($_SESSION['role'])) {
-    header("Location: ../index.php");
-    exit();
+  header("Location: ../index.php");
+  exit();
 }
 
-if ($_SESSION['role'] != 'admin') { 
-    header("Location: ../KasirOnly/kasir.php"); 
-    exit();
+if ($_SESSION['role'] != 'admin') {
+  header("Location: ../KasirOnly/kasir.php");
+  exit();
 }
 include '../Handling/db.php';
 
@@ -135,45 +135,45 @@ $query = mysqli_query($conn, "SELECT * FROM transaksi $whereClause ORDER BY crea
           <td><?= htmlspecialchars($row['status']) ?></td>
         </tr>
       <?php endwhile; ?>
-      <?php
-      // Hitung laba kotor
-      $totalLaba = 0;
-
-      // Filter tanggal yang sama untuk detail
-      $dateFilter = '';
-      if (!empty($_GET['from']) && !empty($_GET['to'])) {
-        $from = mysqli_real_escape_string($conn, $_GET['from']);
-        $to = mysqli_real_escape_string($conn, $_GET['to']);
-        $dateFilter = "AND DATE(t.created_at) BETWEEN '$from' AND '$to'";
-      }
-
-      $labaQuery = mysqli_query($conn, "
-          SELECT d.nama_menu, d.harga AS harga_jual_transaksi, d.jumlah, m.harga_pokok
-          FROM detail_transaksi d
-          JOIN transaksi t ON d.id_order = t.id_order
-          LEFT JOIN menu m ON d.nama_menu = m.nama_menu
-          WHERE 1=1 $dateFilter
-      ");
-
-      while ($labaRow = mysqli_fetch_assoc($labaQuery)) {
-        $hargaPokok = (int)$labaRow['harga_pokok'];
-        $hargaJual = (int)$labaRow['harga_jual_transaksi'];
-        $jumlah = (int)$labaRow['jumlah'];
-
-        $labaItem = ($hargaJual - $hargaPokok) * $jumlah;
-        $totalLaba += $labaItem;
-      }
-      ?>
-
     </tbody>
+    <?php
+    // Hitung total harga pokok
+    $totalHargaPokok = 0;
+
+    // Filter tanggal yang sama untuk detail
+    $dateFilter = '';
+    if (!empty($_GET['from']) && !empty($_GET['to'])) {
+      $from = mysqli_real_escape_string($conn, $_GET['from']);
+      $to = mysqli_real_escape_string($conn, $_GET['to']);
+      $dateFilter = "AND DATE(t.created_at) BETWEEN '$from' AND '$to'";
+    }
+
+    $labaQuery = mysqli_query($conn, "
+      SELECT d.nama_menu, d.jumlah, m.harga_pokok
+      FROM detail_transaksi d
+      JOIN transaksi t ON d.id_order = t.id_order
+      LEFT JOIN menu m ON d.nama_menu = m.nama_menu
+      WHERE 1=1 $dateFilter
+    ");
+
+    while ($labaRow = mysqli_fetch_assoc($labaQuery)) {
+      $hargaPokok = (int)$labaRow['harga_pokok'];
+      $jumlah = (int)$labaRow['jumlah'];
+      $totalHargaPokok += $hargaPokok * $jumlah;
+    }
+
+    $labaBersih = $totalBayar - $totalHargaPokok;
+    ?>
   </table>
 
   <!-- Totals Section -->
   <div class="totals">
     <p>Total Jumlah Pesanan: <?= $totalQty ?></p>
     <p>Total Laba Kotor : Rp <?= number_format($totalBayar, 0, ',', '.') ?></p>
-    <p>Total Laba Bersih : Rp <?= number_format($totalLaba, 0, ',', '.') ?></p>
+    <p>Total Harga Pokok : Rp <?= number_format($totalHargaPokok, 0, ',', '.') ?></p>
+    <p>Total Laba Bersih : Rp <?= number_format($labaBersih, 0, ',', '.') ?></p>
   </div>
+
 
   <div class="footer">
     Dicetak pada: <?= date('d-m-Y H:i:s') ?>
