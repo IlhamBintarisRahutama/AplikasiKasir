@@ -186,7 +186,6 @@ if (isset($_GET['delete'])) {
                                     <td><?= $row['jumlah_pesanan'] ?? 0 ?></td>
                                     <td><?= number_format($row['total_bayar'], 0, ',', '.') ?></td>
                                     <td>
-                                        <button class="action-btn"><i class='bx bx-pencil'></i></button>
                                         <a href="?delete=<?= urlencode($row['id_order']) ?>" onclick="return confirm('Yakin ingin menghapus transaksi ini?');" class="action-btn">
                                             <i class='bx bx-trash'></i>
                                         </a>
