@@ -266,7 +266,7 @@ body {
 
 /* Hamburger Button Common Styles */
 .hamburger-btn {
-  display: none; /* Hidden by default on desktop */
+  display: none;
   width: 44px;
   height: 44px;
   background-color: var(--primary-color);
@@ -274,7 +274,8 @@ body {
   border-radius: 8px;
   cursor: pointer;
   position: relative;
-  z-index: 1100; /* High z-index to be clickable */
+  z-index: 1100;
+   transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
 .hamburger-btn span {
@@ -319,10 +320,12 @@ body {
   top: 0;
   transform: rotate(45deg);
 }
+
 .hamburger-btn.is-active span::after {
   top: 0;
   transform: rotate(-45deg);
 }
+
 
 /* General button styles (from previous code, kept for completeness) */
 .btn {
@@ -601,6 +604,8 @@ table tbody tr:hover {
   text-align: center;
 }
 
+
+
 .badge.take-away {
   background-color: #e0f2f7; /* Light Blue */
   color: #0288d1; /* Darker Blue */
@@ -649,7 +654,7 @@ table tbody tr:hover {
 @media (max-width: 992px) {
   .sidebar {
     transform: translateX(-100%);
-    transition: transform 0.3s ease-in-out; /* Smooth transition for sidebar */
+    transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); /* Smooth transition for sidebar */
   }
 
   body.sidebar-open .sidebar {
@@ -657,28 +662,31 @@ table tbody tr:hover {
   }
 
   .content-wrapper {
-    margin-left: 0; /* Reset margin on smaller screens for full width */
-    transition: margin-left 0.3s ease-in-out; /* Smooth transition for content */
+    margin-left: 0;
+    width: 100%;
+    transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); /* Smooth transition for content */
   }
+  
 
-  body.sidebar-open .content-wrapper {
+  body.sidebar-open .hamburger-btn {
     margin-left: var(--sidebar-width); /* Push content when sidebar is open */
   }
 
   .hamburger-btn {
     display: block; /* Show hamburger button on smaller screens */
-    position: relative; /* Ensure proper positioning in top-navbar */
-    margin-right: 15px; /* Spacing between button and page title */
+    
   }
 
-  .top-navbar {
-    justify-content: flex-start; /* Align hamburger and title to the start */
-    padding: 0 15px; /* Adjust padding for better look on smaller screens */
+   .top-navbar {
+    justify-content: flex-start; 
+    padding: 0 15px; 
+    left: 0; /* Navbar mulai dari tepi kiri */
+    width: 100%;
   }
 
-  .top-navbar .page-title {
-    font-size: 1.3rem; /* Slightly smaller title on tablets */
-  }
+  /* .top-navbar .page-title {
+    font-size: 1.3rem; 
+  }  */
 
   /* Order section adjustments for tablets */
   .order-controls {
@@ -724,14 +732,14 @@ table tbody tr:hover {
 }
 
 @media (max-width: 768px) {
-  .top-navbar {
-    height: var(--top-navbar-height); /* Keep consistent height */
-    padding: 0 15px; /* Ensure consistent padding */
+  /* .top-navbar {
+    height: var(--top-navbar-height); 
+    padding: 0 15px; 
   }
 
   .top-navbar .page-title {
-    font-size: 1.2rem; /* Slightly smaller title on smaller tablets/large phones */
-  }
+    font-size: 1.2rem; 
+  } */
 
   .stat-card .stat-value {
     font-size: 2rem; /* Adjust font size for stat cards */
@@ -749,6 +757,11 @@ table tbody tr:hover {
     gap: 10px; /* Reduce gap between elements in order controls */
   }
 
+  .hamburger-btn {
+    display: block; /* Show hamburger button on smaller screens */
+    
+  }
+
   .order-list-header {
     gap: 10px; /* Reduce gap between elements in order list header */
   }
@@ -760,10 +773,10 @@ table tbody tr:hover {
     grid-template-columns: 1fr; /* Stack stat cards vertically */
   }
 
-  .top-navbar .page-title {
-    font-size: 1.1rem; /* Even smaller title on small phones */
-    margin-left: 10px; /* Adjust margin if needed */
-  }
+  /* .top-navbar .page-title {
+    font-size: 1.1rem; 
+    margin-left: 10px; 
+  } */
 
   .card-header-orange {
     font-size: 1rem; /* Smaller font size for card headers on very small screens */
@@ -782,6 +795,10 @@ table tbody tr:hover {
   .btn-add-transaction {
     padding: 8px 10px; /* Slightly reduce padding for inputs and buttons */
     font-size: 13px; /* Slightly reduce font size */
+  }
+  .hamburger-btn {
+    display: block; /* Show hamburger button on smaller screens */
+    
   }
 
   table th,

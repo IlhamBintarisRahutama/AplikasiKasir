@@ -149,10 +149,10 @@ if ($id_order) {
     </nav>
     <div class="main-content">
         <div class="page-header">
-            <h1 class="page-title">Kasir</h1>
-            <button class="hamburger-btn" id="hamburger-btn-main">
-                <span></span>
-            </button>
+            <button class="hamburger-btn" id="menu-toggle-mobile" aria-label="Buka Menu">
+                 <span></span>
+          </button>
+            <h1 class="page-title">Detail Order</h1>
         </div>
 
         <div class="kasir-main-layout2">
@@ -232,6 +232,7 @@ if ($id_order) {
             <div class="order-column content-container">
                 <div class="content-header">
                     <h2>Detail Order</h2>
+                    
                 </div>
                 <div class="content-body">
                     <form method="post" class="transaction-save-form">
@@ -285,6 +286,7 @@ if ($id_order) {
     </div>
 
     <script src="../JS/kasir.js"></script>
+    <script src="../JS/script.js"></script>
     <script>
         // Filtering kategori dari tombol
         const filterButtons = document.querySelectorAll(".filter-btn");

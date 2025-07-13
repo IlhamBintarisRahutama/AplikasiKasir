@@ -22,10 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $fotoPath = substr($targetFile, 3); // simpan path relatif (tanpa ../)
         }
     }
-
     // Hash password baru
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
     // Buat query update
     $query = "UPDATE users SET nama = ?, username = ?, no_telpon = ?, password = ?, alamat = ?, role = ?";
     $params = [$nama, $username, $telepon, $hashedPassword, $alamat, $level];

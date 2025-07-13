@@ -101,9 +101,9 @@ if (isset($_GET['delete'])) {
 <!-- Daftar Order Start -->
    <div class="content-wrapper">
     <header class="top-navbar">
-        <button class="hamburger-btn mobile-toggle-btn" id="menu-toggle-mobile" aria-label="Buka Menu">
-            <span></span>
-        </button>
+         <button class="hamburger-btn" id="menu-toggle-mobile" aria-label="Buka Menu">
+                 <span></span>
+          </button>
         <div class="navbar-left">
             <h1 class="page-title">Order</h1>
         </div>
@@ -223,7 +223,7 @@ if (isset($_GET['delete'])) {
 
     <!-- Daftar Order End -->
 
-    <script src="script.js"></script>
+    <script src="../JS/script.js"></script>
 
 </body>
 </html>

@@ -132,7 +132,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nama_kategori'])) {
                                     </td>
                                 </tr>
                             <?php endwhile; ?>
-
                         </tbody>
                     </table>
                 </div>

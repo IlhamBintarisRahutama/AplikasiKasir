@@ -295,6 +295,7 @@ body {
   cursor: pointer;
   position: relative;
   z-index: 1100;
+  transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
 .hamburger-btn span {
@@ -345,9 +346,12 @@ body {
   transform: rotate(-45deg);
 }
 
+
+
 @media (max-width: 992px) {
   .sidebar {
     transform: translateX(-100%);
+      transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   }
 
   body.sidebar-open .sidebar {
@@ -357,10 +361,11 @@ body {
   .main-content {
     margin-left: 0;
     width: 100%;
+    transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   }
 
-  .page-header {
-    justify-content: space-between;
+  body.sidebar-open .hamburger-btn {
+    transform: translateX(var(--sidebar-width));
   }
 
   .hamburger-btn {
@@ -507,6 +512,9 @@ body {
   }
   .hamburger-btn {
     display: block;
+  }
+  body.sidebar-open .hamburger-btn {
+    margin-left: var(--sidebar-width); /* Push content when sidebar is open */
   }
   .category-grid-container {
     grid-template-columns: 1fr;

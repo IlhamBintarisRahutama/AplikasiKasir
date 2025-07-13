@@ -5,8 +5,8 @@ if (!isset($_SESSION['role'])) {
     exit();
 }
 
-if ($_SESSION['role'] != 'admin') { 
-    header("Location: ../KasirOnly/kasir.php"); 
+if ($_SESSION['role'] != 'admin') {
+    header("Location: ../KasirOnly/kasir.php");
     exit();
 }
 include '../Handling/db.php';
@@ -93,10 +93,11 @@ while ($row = mysqli_fetch_assoc($kategori_query)) {
     <!-- Daftar Kasir Start -->
     <div class="main-content">
         <div class="page-header">
+            <button class="hamburger-btn" id="menu-toggle-mobile" aria-label="Buka Menu">
+                 <span></span>
+          </button>
             <h1 class="page-title">Kasir</h1>
-            <button class="hamburger-btn" id="hamburger-btn-main">
-                <span></span>
-            </button>
+            
         </div>
 
         <div class="kasir-main-layout">
@@ -120,11 +121,11 @@ while ($row = mysqli_fetch_assoc($kategori_query)) {
                     <div class="menu-items-grid" id="menu-items-grid">
                         <?php
                         $menu_query = mysqli_query($conn, "
-                    SELECT menu.id, menu.kode_menu, menu.nama_menu, menu.harga_jual, menu.gambar_menu, kategori.nama_kategori 
-                    FROM menu 
-                    JOIN kategori ON menu.kategori_id = kategori.id 
-                    ORDER BY menu.id DESC
-                ");
+                            SELECT menu.id, menu.kode_menu, menu.nama_menu, menu.harga_jual, menu.gambar_menu, kategori.nama_kategori 
+                            FROM menu 
+                            JOIN kategori ON menu.kategori_id = kategori.id 
+                            ORDER BY menu.id DESC
+                        ");
 
                         while ($menu = mysqli_fetch_assoc($menu_query)) :
                             $kode_menu = htmlspecialchars($menu['kode_menu']);
@@ -230,6 +231,7 @@ while ($row = mysqli_fetch_assoc($kategori_query)) {
     </div>
 
     <script src="../JS/kasir.js"></script>
+    <script src="../JS/script.js"></script>
     <script>
         // Filtering kategori dari tombol
         const filterButtons = document.querySelectorAll(".filter-btn");

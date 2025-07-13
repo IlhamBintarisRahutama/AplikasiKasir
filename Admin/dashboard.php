@@ -95,9 +95,9 @@ if ($_SESSION['role'] != 'admin') {
       <button class="hamburger-btn mobile-toggle-btn" id="menu-toggle-mobile" aria-label="Buka Menu">
         <span></span>
       </button>
-      <div class="navbar-left">
+      
         <h1 class="page-title">Dashboard</h1>
-      </div>
+      
     </header>
 
     <main class="main-content">

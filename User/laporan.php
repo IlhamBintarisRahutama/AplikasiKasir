@@ -212,7 +212,7 @@ if (isset($_GET['delete'])) {
         </main>
     </div>
     
-    <script src="script.js"></script>
+    <script src="../JS/script.js"></script>
 
 </body>
 </html>
