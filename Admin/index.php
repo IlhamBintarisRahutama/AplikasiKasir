@@ -87,7 +87,7 @@ include '../Handling/db.php';
     
 <!-- Daftar Menu Start -->
     <main class="main-content">
-       <header class="page-header">
+       <header class="page-header2">
          <button class="hamburger-btn" id="menu-toggle-mobile" aria-label="Buka Menu">
                  <span></span>
           </button>
