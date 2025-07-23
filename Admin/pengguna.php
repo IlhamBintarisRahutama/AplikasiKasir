@@ -103,8 +103,10 @@ include '../Handling/db.php';
             <div class="content-header">
                 <h2>Daftar Menu</h2>
                 <div class="search-toolbar">
-                    <input type="text" placeholder="Cari user...." class="search-input">
-                    <button class="btn btn-search">Search</button>
+                    <form method="GET" style="display: flex; gap: 10px;">
+                        <input type="text" name="search" class="search-input" placeholder="Cari user..." value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
+                        <button type="submit" class="btn btn-search">Search</button>
+                    </form>
                 </div>
             </div>
 
@@ -124,8 +126,15 @@ include '../Handling/db.php';
                     </thead>
                     <tbody>
                         <?php
-                        $no = 1;
-                        $query = mysqli_query($conn, "SELECT * FROM users WHERE role = 'kasir' ORDER BY id DESC");
+                        $search = isset($_GET['search']) ? mysqli_real_escape_string($conn, $_GET['search']) : '';
+
+                        $where = "WHERE role = 'kasir'";
+                        if (!empty($search)) {
+                            $where .= " AND (nama LIKE '%$search%' OR username LIKE '%$search%')";
+                        }
+
+                        $query = mysqli_query($conn, "SELECT * FROM users $where ORDER BY id DESC");
+
                         while ($row = mysqli_fetch_assoc($query)) {
                             echo "<tr>";
                             echo "<td>" . $no++ . "</td>";

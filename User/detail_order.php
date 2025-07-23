@@ -86,7 +86,7 @@ if ($id_order) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cashier - Mazt Budi</title>
+    <title>Detail Order - Mazt Budi</title>
     <link rel="stylesheet" href="../CSS/dashboard3.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
@@ -161,11 +161,6 @@ if ($id_order) {
                     <h2>Daftar Menu</h2>
                 </div>
                 <div class="content-body">
-                    <div class="menu-search-bar">
-                        <input type="text" placeholder="Cari menu..." class="search-input" id="search-input">
-                        <button class="btn btn-search" id="search-btn">Search</button>
-                    </div>
-
                     <div class="menu-items-grid" id="menu-items-grid">
                         <?php if (empty($items_with_images)): ?>
                             <p>Belum ada item untuk order ini.</p>

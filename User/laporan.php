@@ -108,8 +108,16 @@ if (isset($_GET['delete'])) {
             $lastDay = date('Y-m-t');
 
             // Ambil dari GET jika ada, kalau tidak gunakan default
-            $from = isset($_GET['from']) && $_GET['from'] !== '' ? $_GET['from'] : $firstDay;
-            $to   = isset($_GET['to']) && $_GET['to'] !== '' ? $_GET['to']   : $lastDay;
+            if (isset($_GET['month']) && isset($_GET['year'])) {
+                $month = (int)$_GET['month'];
+                $year = (int)$_GET['year'];
+                $from = date("Y-m-01", strtotime("$year-$month-01"));
+                $to = date("Y-m-t", strtotime("$year-$month-01"));
+            } else {
+                $from = $firstDay;
+                $to = $lastDay;
+            }
+
 
             $where = [];
             $where[] = "DATE(created_at) BETWEEN '" . mysqli_real_escape_string($conn, $from) . "' AND '" . mysqli_real_escape_string($conn, $to) . "'";
@@ -134,9 +142,23 @@ if (isset($_GET['delete'])) {
                 <form method="GET" class="order-controls">
                     <div class="date-filter">
                         <form method="GET">
-                            <input type="date" name="from" value="<?= htmlspecialchars($from) ?>">
-                            <span>-</span>
-                            <input type="date" name="to" value="<?= htmlspecialchars($to) ?>">
+                            <select name="month">
+                                <?php
+                                for ($m = 1; $m <= 12; $m++) {
+                                    $selected = (isset($_GET['month']) && $_GET['month'] == $m) ? 'selected' : '';
+                                    echo "<option value='$m' $selected>" . date('F', mktime(0, 0, 0, $m, 1)) . "</option>";
+                                }
+                                ?>
+                            </select>
+                            <select name="year">
+                                <?php
+                                $currentYear = date('Y');
+                                for ($y = $currentYear; $y >= $currentYear - 5; $y--) {
+                                    $selected = (isset($_GET['year']) && $_GET['year'] == $y) ? 'selected' : '';
+                                    echo "<option value='$y' $selected>$y</option>";
+                                }
+                                ?>
+                            </select>
                             <button type="submit" class="btn btn-search">Search</button>
                         </form>
                     </div>

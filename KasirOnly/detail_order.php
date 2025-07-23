@@ -96,7 +96,7 @@ $gambar = $userData['gambar_user'] ?? 'https://i.pravatar.cc/40?u=default';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cashier - Mazt Budi</title>
-    <link rel="stylesheet" href="../CSS/dashboard1.css">
+    <link rel="stylesheet" href="../CSS/dashboard3.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 
@@ -134,10 +134,10 @@ $gambar = $userData['gambar_user'] ?? 'https://i.pravatar.cc/40?u=default';
     </nav>
     <div class="main-content">
         <div class="page-header">
-            <h1 class="page-title">Kasir</h1>
-            <button class="hamburger-btn" id="hamburger-btn-main">
+            <button class="hamburger-btn" id="menu-toggle-mobile" aria-label="Buka Menu">
                 <span></span>
             </button>
+            <h1 class="page-title">Kasir</h1>
         </div>
 
         <div class="kasir-main-layout2">
@@ -146,11 +146,6 @@ $gambar = $userData['gambar_user'] ?? 'https://i.pravatar.cc/40?u=default';
                     <h2>Daftar Menu</h2>
                 </div>
                 <div class="content-body">
-                    <div class="menu-search-bar">
-                        <input type="text" placeholder="Cari menu..." class="search-input" id="search-input">
-                        <button class="btn btn-search" id="search-btn">Search</button>
-                    </div>
-
                     <div class="menu-items-grid" id="menu-items-grid">
                         <?php if (empty($items_with_images)): ?>
                             <p>Belum ada item untuk order ini.</p>
@@ -269,7 +264,8 @@ $gambar = $userData['gambar_user'] ?? 'https://i.pravatar.cc/40?u=default';
         </div>
     </div>
 
-    <script src="../JS/kasir.js"></script>
+    <script src="../JS/kasir.js"></script>\
+    <script src="../JS/script.js"></script>
     <script>
         // Filtering kategori dari tombol
         const filterButtons = document.querySelectorAll(".filter-btn");

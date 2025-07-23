@@ -39,7 +39,7 @@ $gambar = $userData['gambar_user'] ?? 'https://i.pravatar.cc/40?u=default';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cashier - Mazt Budi</title>
-    <link rel="stylesheet" href="../CSS/dashboard1.css">
+    <link rel="stylesheet" href="../CSS/dashboard3.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 
@@ -79,10 +79,10 @@ $gambar = $userData['gambar_user'] ?? 'https://i.pravatar.cc/40?u=default';
     <!-- Daftar Kasir Start -->
     <div class="main-content">
         <div class="page-header">
-            <h1 class="page-title">Kasir</h1>
-            <button class="hamburger-btn" id="hamburger-btn-main">
+            <button class="hamburger-btn" id="menu-toggle-mobile" aria-label="Buka Menu">
                 <span></span>
             </button>
+            <h1 class="page-title">Kasir</h1>
         </div>
 
         <div class="kasir-main-layout">
@@ -99,18 +99,28 @@ $gambar = $userData['gambar_user'] ?? 'https://i.pravatar.cc/40?u=default';
                     </div>
 
                     <div class="menu-search-bar">
-                        <input type="text" placeholder="Cari menu..." class="search-input" id="search-input">
-                        <button class="btn btn-search" id="search-btn">Search</button>
+                        <form method="GET" style="display: flex; gap: 10px;">
+                            <input type="text" name="search" placeholder="Cari menu..." class="search-input" value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
+                            <button class="btn btn-search" type="submit">Search</button>
+                        </form>
                     </div>
 
                     <div class="menu-items-grid" id="menu-items-grid">
                         <?php
+                        $search = isset($_GET['search']) ? mysqli_real_escape_string($conn, $_GET['search']) : '';
+
+                        $where = "";
+                        if (!empty($search)) {
+                            $where = "WHERE menu.nama_menu LIKE '%$search%' OR menu.kode_menu LIKE '%$search%'";
+                        }
+
                         $menu_query = mysqli_query($conn, "
-                    SELECT menu.id, menu.kode_menu, menu.nama_menu, menu.harga_jual, menu.gambar_menu, kategori.nama_kategori 
-                    FROM menu 
-                    JOIN kategori ON menu.kategori_id = kategori.id 
-                    ORDER BY menu.id DESC
-                ");
+                            SELECT menu.id, menu.kode_menu, menu.nama_menu, menu.harga_jual, menu.gambar_menu, kategori.nama_kategori 
+                            FROM menu 
+                            JOIN kategori ON menu.kategori_id = kategori.id 
+                            $where
+                            ORDER BY menu.id DESC
+                        ");
 
                         while ($menu = mysqli_fetch_assoc($menu_query)) :
                             $kode_menu = htmlspecialchars($menu['kode_menu']);
@@ -216,6 +226,7 @@ $gambar = $userData['gambar_user'] ?? 'https://i.pravatar.cc/40?u=default';
     </div>
 
     <script src="../JS/kasir.js"></script>
+    <script src="../JS/script.js"></script>
     <script>
         // Filtering kategori dari tombol
         const filterButtons = document.querySelectorAll(".filter-btn");
@@ -230,15 +241,14 @@ $gambar = $userData['gambar_user'] ?? 'https://i.pravatar.cc/40?u=default';
 
                 menuCards.forEach(card => {
                     const cardKategori = card.dataset.kategori;
-                    if (kategori === "all" || cardKategori === kategori) {
-                        card.style.display = "block";
-                    } else {
-                        card.style.display = "none";
-                    }
+                    card.style.display = (kategori === "all" || cardKategori === kategori) ? "block" : "none";
                 });
             });
         });
     </script>
+</body>
+</html>
+
 </body>
 
 </html>

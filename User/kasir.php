@@ -114,16 +114,26 @@ while ($row = mysqli_fetch_assoc($kategori_query)) {
                     </div>
 
                     <div class="menu-search-bar">
-                        <input type="text" placeholder="Cari menu..." class="search-input" id="search-input">
-                        <button class="btn btn-search" id="search-btn">Search</button>
+                        <form method="GET" style="display: flex; gap: 10px;">
+                            <input type="text" name="search" placeholder="Cari menu..." class="search-input" value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
+                            <button class="btn btn-search" type="submit">Search</button>
+                        </form>
                     </div>
 
                     <div class="menu-items-grid" id="menu-items-grid">
                         <?php
+                        $search = isset($_GET['search']) ? mysqli_real_escape_string($conn, $_GET['search']) : '';
+
+                        $where = "";
+                        if (!empty($search)) {
+                            $where = "WHERE menu.nama_menu LIKE '%$search%' OR menu.kode_menu LIKE '%$search%'";
+                        }
+
                         $menu_query = mysqli_query($conn, "
                             SELECT menu.id, menu.kode_menu, menu.nama_menu, menu.harga_jual, menu.gambar_menu, kategori.nama_kategori 
                             FROM menu 
                             JOIN kategori ON menu.kategori_id = kategori.id 
+                            $where
                             ORDER BY menu.id DESC
                         ");
 

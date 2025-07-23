@@ -88,7 +88,7 @@ $gambar = $userData['gambar_user'] ?? 'https://i.pravatar.cc/40?u=default';
     <!-- Daftar Order Start -->
     <div class="content-wrapper">
         <header class="top-navbar">
-            <button class="hamburger-btn mobile-toggle-btn" id="menu-toggle-mobile" aria-label="Buka Menu">
+            <button class="hamburger-btn" id="menu-toggle-mobile" aria-label="Buka Menu">
                 <span></span>
             </button>
             <div class="navbar-left">
@@ -212,7 +212,7 @@ $gambar = $userData['gambar_user'] ?? 'https://i.pravatar.cc/40?u=default';
 
     <!-- Daftar Order End -->
 
-    <script src="script.js"></script>
+    <script src="../JS/script.js"></script>
 
 </body>
 
