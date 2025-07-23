@@ -103,8 +103,10 @@ include '../Handling/db.php';
             <div class="content-header">
                 <h2>Daftar Menu</h2>
                 <div class="search-toolbar">
-                    <input type="text" placeholder="Cari menu...." class="search-input">
-                    <button class="btn btn-search">Search</button>
+                    <form method="GET" style="display: flex; gap: 10px;">
+                        <input type="text" name="search" placeholder="Cari menu..." class="search-input" value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
+                        <button class="btn btn-search" type="submit">Search</button>
+                    </form>
                 </div>
             </div>
 
@@ -125,10 +127,19 @@ include '../Handling/db.php';
                     <tbody>
                         <?php
                             $no = 1;
+                            $search = isset($_GET['search']) ? mysqli_real_escape_string($conn, $_GET['search']) : '';
+
+                            $where = "";
+                            if (!empty($search)) {
+                                $where = "WHERE menu.nama_menu LIKE '%$search%' OR menu.kode_menu LIKE '%$search%'";
+                            }
+
                             $query = mysqli_query($conn, "SELECT menu.*, kategori.nama_kategori 
                                                         FROM menu 
                                                         JOIN kategori ON menu.kategori_id = kategori.id 
+                                                        $where
                                                         ORDER BY menu.id DESC");
+
 
                             while ($row = mysqli_fetch_assoc($query)) {
                                 echo "<tr>";
